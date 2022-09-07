@@ -3,36 +3,29 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteFromCart, updateCart } from "../Redux/productActions";
 
 const Cart = () => {
-
-  const dispatch =useDispatch()
-
+  const dispatch = useDispatch();
 
   const cartProducts = useSelector((state) => {
     return state.cart;
   });
-console.log(cartProducts)
+  console.log(cartProducts);
 
-const [cart,setCart]= useState()
- console.log(cart)
-  
-
+  const [cart, setCart] = useState();
+  console.log(cart);
 
   useEffect(() => {
-   
-    setCart(cartProducts)
+    setCart(cartProducts);
   }, [cartProducts]);
 
-  const updateProductQty =(id,qty,products)=>{
-    // console.log("id:-",id)
-    // console.log("qty:-",qty)
-    // console.log("products:-",products)
+  const updateProductQty = (id, qty, products) => {
     const updateProducts = JSON.parse(JSON.stringify(products));
-    const indexToUpdate = updateProducts.findIndex((cartProduct)=>cartProduct.id === id)
-    console.log(updateProducts[indexToUpdate])
+    const indexToUpdate = updateProducts.findIndex(
+      (cartProduct) => cartProduct.id === id
+    );
+    console.log(updateProducts[indexToUpdate]);
     updateProducts[indexToUpdate].qty = qty > 0 ? qty : 1;
-    return updateProducts
-
-  }
+    return updateProducts;
+  };
 
   return (
     <div className="cart-container">
@@ -42,35 +35,54 @@ const [cart,setCart]= useState()
             <img src={product.image}></img>
             <div className="content">
               <div>{product.title}</div>
-              <div><p>Category :- {product.category}</p></div>
-              <div>Price:-{product.price}</div>
-              <div> <span>{product.qty} X {product.price} = {product.qty*product.price} </span></div>
               <div>
+                <p>Category :- {product.category}</p>
+              </div>
+              <div>Price:-{product.price}</div>
+              <div>
+                {" "}
+                <span>
+                  {product.qty} X {product.price} ={" "}
+                  {product.qty * product.price}{" "}
+                </span>
+              </div>
+              <div>
+                <button
+                  onClick={() => {
+                    const increaseQty = updateProductQty(
+                      product.id,
+                      product.qty + 1,
+                      cart
+                    );
+                    dispatch(updateCart(increaseQty));
+                  }}
+                >
+                  +
+                </button>
+
+                <button
+                  onClick={() => {
+                    const increaseQty = updateProductQty(
+                      product.id,
+                      product.qty - 1,
+                      cart
+                    );
+                    dispatch(updateCart(increaseQty));
+                  }}
+                >
+                  -
+                </button>
+              </div>
+            </div>
+
+            <div>
               <button
                 onClick={() => {
-                 const increaseQty = updateProductQty(product.id,product.qty+1,cart)
-                  dispatch(updateCart(increaseQty))
+                  dispatch(deleteFromCart(product));
                 }}
               >
-                +
+                Remove
               </button>
-             
-              <button
-                 onClick={() => {
-                  const increaseQty = updateProductQty(product.id,product.qty-1,cart)
-                   dispatch(updateCart(increaseQty))
-                 }}
-              >
-                -
-              </button>
-            </div>
-            </div>
-          
-            <div>
-
-            <button onClick={()=>{
-              dispatch(deleteFromCart(product))
-            }}>Remove</button>
             </div>
           </div>
         );
