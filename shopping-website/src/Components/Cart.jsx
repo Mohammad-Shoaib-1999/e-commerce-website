@@ -1,54 +1,76 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteFromCart, updateCart } from "../Redux/productActions";
 
 const Cart = () => {
+
+  const dispatch =useDispatch()
+
+
   const cartProducts = useSelector((state) => {
     return state.cart;
   });
+console.log(cartProducts)
 
-  const [quantity, updateQuantity] = useState();
+const [cart,setCart]= useState()
+ console.log(cart)
   
-  const handleIncrement = () => {};
 
-  const handleDecrement = () => {};
 
   useEffect(() => {
-    updateQuantity(cartProducts);
+   
+    setCart(cartProducts)
   }, [cartProducts]);
 
+  const updateProductQty =(id,qty,products)=>{
+    // console.log("id:-",id)
+    // console.log("qty:-",qty)
+    // console.log("products:-",products)
+    const updateProducts = JSON.parse(JSON.stringify(products));
+    const indexToUpdate = updateProducts.findIndex((cartProduct)=>cartProduct.id === id)
+    console.log(updateProducts[indexToUpdate])
+    updateProducts[indexToUpdate].qty = qty > 0 ? qty : 1;
+    return updateProducts
+
+  }
+
   return (
-    <div>
-      {cartProducts.map((product) => {
+    <div className="cart-container">
+      {cart?.map((product) => {
         return (
-          <div className="card-products">
+          <div key={product.id} className="cart-products">
             <img src={product.image}></img>
-            <div>
-              <div>{product.category}</div>
+            <div className="content">
               <div>{product.title}</div>
+              <div><p>Category :- {product.category}</p></div>
               <div>Price:-{product.price}</div>
-            </div>
-            <div>
-              {/* <button
+              <div> <span>{product.qty} X {product.price} = {product.qty*product.price} </span></div>
+              <div>
+              <button
                 onClick={() => {
-                  const updateArray = quantity.map((ele) => {
-                    if (product.title === ele.title) {
-                      ele.id += 1;
-                    }
-                    return ele;
-                  });
-                  updateQuantity(updateArray)
+                 const increaseQty = updateProductQty(product.id,product.qty+1,cart)
+                  dispatch(updateCart(increaseQty))
                 }}
               >
                 +
               </button>
-              <input type="text" value={produ} />
+             
               <button
-                onClick={() => {
-                  handleDecrement();
-                }}
+                 onClick={() => {
+                  const increaseQty = updateProductQty(product.id,product.qty-1,cart)
+                   dispatch(updateCart(increaseQty))
+                 }}
               >
                 -
-              </button> */}
+              </button>
+            </div>
+            </div>
+          
+            <div>
+
+            <button onClick={()=>{
+              dispatch(deleteFromCart(product))
+            }}>Remove</button>
             </div>
           </div>
         );

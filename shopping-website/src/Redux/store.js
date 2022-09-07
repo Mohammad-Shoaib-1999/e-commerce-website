@@ -5,7 +5,7 @@ const initialState = {
   products: [],
   filter: [],
   cart: [],
-  selectedProduct:null
+  selectedProduct: null,
 };
 // Store
 export const store = configureStore({
@@ -18,16 +18,24 @@ export const store = configureStore({
         return { ...state, products: payload };
 
       case ActionTypes.ADD_NEW_PRODUCTS:
-        console.log("Second Action :-", state);
         return { ...state, products: [...state.products, payload] };
 
-      case ActionTypes.ADD_TO_CART:
-        console.log(" ADD_TO_CART :-", state);
-        return { ...state, cart: [...state.cart, payload] };
-
       case ActionTypes.SELECTED_PRODUCT:
-       
-        return { ...state, selectedProduct:payload };
+        return { ...state, selectedProduct: payload };
+
+      case ActionTypes.ADD_TO_CART:
+        console.log(state.cart)
+        return { ...state, cart: [...state.cart.filter(item=>item.id !==payload.id), { ...payload, qty: 1 }] };
+
+      case ActionTypes.UPDATE_CART:
+        return {
+          ...state, cart: payload,
+        };
+      case ActionTypes.DELETE_FROM_CART:
+        return{
+          ...state,cart:[...state.cart.filter(item=>item!==payload)]
+        }
+
       default:
         break;
     }

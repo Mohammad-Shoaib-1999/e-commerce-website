@@ -37,7 +37,7 @@ const LoginForm = (props) => {
           LOCAL_STORAGE_LOGGED_USER_KEY,
           JSON.stringify(result)
         );
-        navigate("/home");
+        navigate("/");
       } else {
         alert("invalid user");
       }

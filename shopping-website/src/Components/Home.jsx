@@ -1,34 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../Redux/productActions";
 
-// import Cards from "./Cards";
-// import "./Home.css";
-
 const Home = () => {
+
   const dispatch = useDispatch();
 
   const products = useSelector((state) => {
     return state.products;
   });
 
-  const [filter, setFilter] = useState(products);
-
-  useEffect(() => {
-    setFilter(products);
-  }, [products]);
-
-  const handleClick = (filter) => {
-    dispatch(addToCart(filter));
-  };
-
-  const Loading = () => {
-    return <>loading...</>;
-  };
-
-  console.log(filter);
+  const [filteredProducts, setFilter] = useState(products);
+  const [searchInp, setSearchInp] = useState("");
+  const [filterCriteria, setfilterCriteria] = useState("");
 
   const filterProducts = (category) => {
     const updateProducts = products.filter((item) => {
@@ -38,8 +24,20 @@ const Home = () => {
     });
     setFilter(updateProducts);
   };
-  const ShowProducts = () => {
-    return (
+
+  useEffect(() => {
+    if (filterCriteria === "") {
+      setFilter(products);
+      return;
+    }
+    let updatedProducts = products.filter((product) =>
+      product.title.toLowerCase().includes(filterCriteria.trim().toLowerCase())
+    );
+    setFilter(updatedProducts);
+  }, [products, filterCriteria]);
+
+  return (
+    <>
       <div className="main-container">
         <div className="categories">
           <button
@@ -83,39 +81,56 @@ const Home = () => {
             Electronics
           </button>
         </div>
+
+        <div className="search-form">
+          <input
+            type="search"
+            className="search"
+            onChange={(e) => {
+              setSearchInp(e.target.value);
+              if (e.target.value === "") {
+                setfilterCriteria("");
+              }
+            }}
+            value={searchInp}
+          />
+          <button
+            className="btn"
+            onClick={() => {
+              setfilterCriteria(searchInp);
+            }}
+          >
+            Search
+          </button>
+        </div>
+
         <div className="container">
-          {filter?.map((item) => {
+          {filteredProducts?.map((item) => {
             return (
-				<div key={item.id} className="card">
-					<Link to={`/product/${item.id}`} style={{textDecoration:"none"}} >
+              <div key={item.id} className="card">
+                <Link
+                  to={`/product/${item.id}`}
+                  style={{ textDecoration: "none" }}
+                >
                   <img src={item.image} alt="" />
 
                   <h3>{item.title.substring(0, 12)}</h3>
 
                   <p className="price">Rs:-{item.price}</p>
-
-                  <p>{item.category}</p>
-
-				  </Link>
-                  <button
-                    className="btn"
-                    onClick={() => {
-                      handleClick(item);
-                    }}
-                  >
-                    Add to Cart
-                  </button>
-                </div>
+                </Link>
+                <button
+                  className="btn"
+                  onClick={() => {
+                    dispatch(addToCart(item));
+                  }}
+                >
+                  Add to Cart
+                </button>
+              </div>
             );
           })}
         </div>
       </div>
-    );
-  };
-
-  return (
-    <>
-      <ShowProducts></ShowProducts>
     </>
   );
 };

@@ -20,6 +20,7 @@ function App() {
   const dispatch = useDispatch();
 
   const [isloggeIn, setLoggedIn] = useState(false);
+  console.log(isloggeIn)
   const [user, setUser] = useState({});
 
   // This effect runs whenever `user` state variable changes
@@ -41,6 +42,7 @@ function App() {
       setUser(loggedInUser);
       setLoggedIn(true);
     }
+    console.log("Effect Login & Logout")
   }, []);
 
   useEffect(() => {
@@ -49,6 +51,7 @@ function App() {
       const allProducts = response.data;
       dispatch(setProduct(allProducts));
     });
+    console.log("Effect Fetching Data")
   }, [dispatch]);
 
   return (

@@ -2,9 +2,11 @@ import React, { useState } from "react";
 // import "./Form.css";
 import { addNewProduct } from "../Redux/productActions";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const AddProductsForm = () => {
   const dispatch = useDispatch();
+  const navigate =useNavigate()
   const [formData, setFormData] = useState({
     id: 0,
     title: "",
@@ -32,6 +34,7 @@ const AddProductsForm = () => {
       price: 0,
       image: "",
     });
+    navigate("/")
   };
   return (
     <section>
